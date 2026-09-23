@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // TestNG
+    testImplementation 'org.testng:testng:7.12.0'
+    // RestAssured
+    testImplementation 'io.rest-assured:rest-assured:6.0.1'
+    // JSON
+    implementation 'org.json:json:20260814'
+    // Cucumber TestNG + Java
+    testImplementation 'io.cucumber:cucumber-testng:7.34.7'
+    testImplementation 'io.cucumber:cucumber-java:7.34.7'
+    // Matchers
+    testImplementation 'org.hamcrest:hamcrest:3.0'
+    //Selenium
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.49.0'
+    //WebDriverManager
+    testImplementation 'io.github.bonigarcia:webdrivermanager:6.3.4'
+
+
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+test {
+    useTestNG()
+    outputs.upToDateWhen { false }
+    testLogging {
+        events "passed", "skipped", "failed"
+        showStandardStreams = true}
+}
