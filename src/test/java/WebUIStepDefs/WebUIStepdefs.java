@@ -10,7 +10,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -24,29 +24,34 @@ public class WebUIStepdefs {
     SamsungGalaxyS6POM SamsungGalaxyS6Page;
     CartPOM cartPage;
 
+    // Hook Cucumber harus public void. Semua POM dibuat di sini SETELAH driver ada,
+    // supaya tidak ada POM yang memegang driver null.
     @Before
-    private WebDriver getDriver() {
-        if (driver == null) {
-            ChromeOptions options = new ChromeOptions();
-            if (System.getenv("CI") != null) {
-                options.addArguments("--headless=new");
-                options.addArguments("--no-sandbox");
-                options.addArguments("--disable-dev-shm-usage");
-                options.addArguments("--window-size=1920,1080");
-            }
-            String chromeBinary = System.getenv("CHROME_BIN") != null
-                    ? System.getenv("CHROME_BIN")
-                    : System.getenv("CHROME_PATH");
-            if (chromeBinary != null && !chromeBinary.isEmpty()) {
-                options.setBinary(chromeBinary);
-            }
-            driver = WebDriverManager.chromedriver().capabilities(options).create();
+    public void setUp() {
+        ChromeOptions options = new ChromeOptions();
+        if (System.getenv("CI") != null) {
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--window-size=1920,1080");
         }
-        return driver;
+        String chromeBinary = System.getenv("CHROME_BIN") != null
+                ? System.getenv("CHROME_BIN")
+                : System.getenv("CHROME_PATH");
+        if (chromeBinary != null && !chromeBinary.isEmpty()) {
+            options.setBinary(chromeBinary);
+        }
+        // Selenium 4.6+ sudah punya Selenium Manager yang otomatis mengunduh chromedriver
+        // sesuai versi Chrome yang terpasang (termasuk yang di-set lewat CHROME_BIN)
+        driver = new ChromeDriver(options);
+
+        homePage = new HomePagePOM(driver);
+        SamsungGalaxyS6Page = new SamsungGalaxyS6POM(driver);
+        cartPage = new CartPOM(driver);
     }
+
     @Given("user is on homepage")
     public void userIsOnHomepage(){
-        homePage = new HomePagePOM(driver);
         homePage.goToHomePage();
     }
 
@@ -73,19 +78,20 @@ public class WebUIStepdefs {
     @Then("user sees {string} on home page")
     public void userSeesOnHomePage(String expectedWelcomeMessage) {
         String receivedWelcomeMessage = homePage.getWelcomeMessage();
-        assertEquals(expectedWelcomeMessage, receivedWelcomeMessage);
+        assertEquals(receivedWelcomeMessage, expectedWelcomeMessage);
     }
 
     @Then("user sees error {string}")
     public void userSeesError(String errorMessage) {
         String receivedErrorMessage = homePage.getAlertMessage();
-        assertEquals(errorMessage, receivedErrorMessage);
+        assertEquals(receivedErrorMessage, errorMessage);
     }
 
+    // Setiap scenario membuka browser baru (belum login), jadi step ini benar-benar login.
     @And("user is logged in as Erien")
     public void userIsLoggedInAsErien() {
-        String welcomeText = homePage.getWelcomeMessage();
-        assertEquals(welcomeText, "Welcome Erien");
+        homePage.logIn("Erien", "password");
+        assertEquals(homePage.getWelcomeMessage(), "Welcome Erien");
     }
 
     @When("user clicks on product name Samsung galaxy s6")
@@ -95,8 +101,8 @@ public class WebUIStepdefs {
 
     @Then("user sees Add to cart button on Samsung Galaxy S6 product page")
     public void userSeesAddToCartButtonOnSamsungGalaxyS6ProductPage() {
-        String welcomeText = SamsungGalaxyS6Page.getWelcomeMessage();
-        assertEquals(welcomeText, "Welcome Erien");
+        assertEquals(SamsungGalaxyS6Page.getProductTitle(), "Samsung galaxy s6");
+        assertTrue(SamsungGalaxyS6Page.isAddToCartButtonDisplayed());
     }
 
     @Given("user is on Samsung galaxy s6 product page")
@@ -135,13 +141,19 @@ public class WebUIStepdefs {
         cartPage.clickPurchaseButton();
     }
 
+    // Pesan sukses checkout adalah popup SweetAlert di halaman, bukan JS alert
+    @Then("user sees purchase message {string}")
+    public void userSeesPurchaseMessage(String expectedMessage) {
+        assertEquals(cartPage.getPurchaseTitle(), expectedMessage);
+    }
 
     @And("user sees {string} and {string}")
     public void userSeesAmountFieldIsAndCardNumberFieldIs(String amountField, String cardField) {
         String responseText = cartPage.getResponseText();
-        assertTrue(responseText.contains(amountField));
-        assertTrue(responseText.contains(cardField));
+        assertTrue(responseText.contains(amountField), "Actual text: " + responseText);
+        assertTrue(responseText.contains(cardField), "Actual text: " + responseText);
     }
+
     @After
     public void tearDown() {
         if (driver != null) {
@@ -150,4 +162,3 @@ public class WebUIStepdefs {
         }
     }
 }
-

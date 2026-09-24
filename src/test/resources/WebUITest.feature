@@ -1,3 +1,4 @@
+@web
 Feature: Web UI Testing on https://www.demoblaze.com/
 
   Scenario: (Negative test) Login using only password
@@ -41,7 +42,7 @@ Feature: Web UI Testing on https://www.demoblaze.com/
       | Year        | 2026              |
 
     And user clicks Purchase button
-    Then user sees message "Thank you for your purchase!"
+    Then user sees purchase message "Thank you for your purchase!"
     And user sees "Amount: 360 USD" and "Card Number: 1234567890"
 
 
