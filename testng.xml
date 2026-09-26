@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="GelatoGalaxyFinalProjectSuite" verbose="1">
+    <!-- Menjalankan kedua runner Cucumber (WebUI & API) lewat satu suite TestNG,
+         dipakai oleh task `test` di build.gradle (useTestNG { suites 'testng.xml' }) -->
+    <test name="WebUITest">
+        <classes>
+            <class name="runner.WebUICucumberTest"/>
+        </classes>
+    </test>
+    <test name="APITest">
+        <classes>
+            <class name="runner.APICucumberTest"/>
+        </classes>
+    </test>
+</suite>
