@@ -36,7 +36,9 @@ configurations {
 }
 
 test {
-    useTestNG()
+    useTestNG() {
+        suites 'testng.xml'
+    }
     outputs.upToDateWhen { false }
     testLogging {
         events "passed", "skipped", "failed"

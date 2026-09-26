@@ -3,35 +3,29 @@ package WebUIPages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-public class SamsungGalaxyS6POM {
-    WebDriver driver;
-    WebDriverWait wait;
+public class SamsungGalaxyS6POM extends BasePage {
     By productTitle = By.xpath("//*[@id=\"tbodyid\"]/h2");
     By addToCartButton = By.xpath("//*[@id=\"tbodyid\"]/div[2]/div/a");
 
     public SamsungGalaxyS6POM(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        super(driver);
     }
 
     public void goToSamsungGalaxyS6POM(){
-        driver.get("https://www.demoblaze.com/prod.html?idp_=1");
+        openUrl("https://www.demoblaze.com/prod.html?idp_=1");
     }
 
     public String getProductTitle(){
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(productTitle)).getText();
+        return getText(productTitle);
     }
 
     public boolean isAddToCartButtonDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(addToCartButton)).isDisplayed();
+        return waitUntilVisible(addToCartButton).isDisplayed();
     }
 
     public void clickAddToCartButton() {
-        wait.until(ExpectedConditions.elementToBeClickable(addToCartButton)).click();
+        click(addToCartButton);
     }
 
     public String getSuccessfulAlertMessage(){
