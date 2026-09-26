@@ -36,6 +36,8 @@ configurations {
 }
 
 test {
+    // Jalankan lewat suite testng.xml (bukan class-scanning default) supaya kedua
+    // runner Cucumber (WebUI & API) didaftarkan eksplisit dalam satu suite TestNG.
     useTestNG() {
         suites 'testng.xml'
     }

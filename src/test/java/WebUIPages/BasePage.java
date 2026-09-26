@@ -8,6 +8,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
+// Superclass untuk semua Page Object (POM). Sebelumnya tiap POM (HomePagePOM,
+// SamsungGalaxyS6POM, CartPOM) membuat WebDriverWait sendiri-sendiri dan mengulang
+// pola wait.until(ExpectedConditions...) di banyak tempat. BasePage menyatukan
+// driver/wait dan helper aksi umum supaya POM turunan tinggal panggil helper-nya.
 public class BasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;

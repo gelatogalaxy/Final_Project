@@ -37,6 +37,8 @@ public class CartPOM extends BasePage {
     public void fillInOrderForm(DataTable dataTable){
         Map<String, String> formData = dataTable.asMap(String.class, String.class);
 
+        // type() dari BasePage menunggu elemen visible sebelum sendKeys;
+        // sebelumnya field selain "name" pakai driver.findElement langsung tanpa wait.
         type(nameField, formData.get("Name"));
         type(countryField, formData.get("Country"));
         type(cityField, formData.get("City"));
