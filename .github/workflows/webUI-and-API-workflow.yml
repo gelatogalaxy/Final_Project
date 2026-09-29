@@ -30,10 +30,10 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
-    - name: Setup Chrome
+    - name: Setup Chrome & Driver Alternate
       uses: browser-actions/setup-chrome@v2
       with:
-        chrome-version: stable
+        chrome-version: 131
         install-chromedriver: true
 
     - name: Build (without tests)
