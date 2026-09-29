@@ -3,13 +3,8 @@ package WebUIPages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
-
-public class HomePagePOM {
-    WebDriver driver;
-    WebDriverWait wait;
+public class HomePagePOM extends BasePage {
     By logInMenuButton = By.id("login2");
     By finalLogInButton = By.xpath("//*[@id=\"logInModal\"]/div/div/div[3]/button[2]");
     By usernameInputText = By.id("loginusername");
@@ -18,34 +13,33 @@ public class HomePagePOM {
     By samsungGalaxyS6Title = By.linkText("Samsung galaxy s6");
 
     public HomePagePOM(WebDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        super(driver);
     }
 
     public void goToHomePage(){
-        driver.get("https://www.demoblaze.com/");
+        openUrl("https://www.demoblaze.com/");
     }
 
     public void clickLogInMenuButton(){
-        wait.until(ExpectedConditions.elementToBeClickable(logInMenuButton)).click();
+        click(logInMenuButton);
     }
 
     public void inputUsername(String username){
-        wait.until(ExpectedConditions.visibilityOfElementLocated(usernameInputText)).sendKeys(username);
+        type(usernameInputText, username);
     }
 
     public void inputPassword(String password) {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(passwordInputText)).sendKeys(password);
+        type(passwordInputText, password);
     }
 
     public void clickFinalLogInButton(){
-        wait.until(ExpectedConditions.elementToBeClickable(finalLogInButton)).click();
+        click(finalLogInButton);
     }
 
     public String getWelcomeMessage(){
         // Teks "Welcome ..." baru muncul setelah request login selesai
         wait.until(ExpectedConditions.textToBePresentInElementLocated(welcomeMessage, "Welcome"));
-        return driver.findElement(welcomeMessage).getText();
+        return getText(welcomeMessage);
     }
 
     public String getAlertMessage(){
@@ -53,7 +47,7 @@ public class HomePagePOM {
     }
 
     public void clickOnSamsungGalaxyS6(){
-        wait.until(ExpectedConditions.elementToBeClickable(samsungGalaxyS6Title)).click();
+        click(samsungGalaxyS6Title);
     }
 
     /**
