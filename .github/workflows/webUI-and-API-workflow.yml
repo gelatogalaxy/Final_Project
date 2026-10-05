@@ -33,7 +33,7 @@ jobs:
     - name: Setup Chrome & Driver Alternate
       uses: browser-actions/setup-chrome@v2
       with:
-        chrome-version: 131
+        chrome-version: 153.0.8010.52
         install-chromedriver: true
 
     - name: Build (without tests)
