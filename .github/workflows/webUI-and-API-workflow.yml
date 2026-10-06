@@ -48,12 +48,21 @@ jobs:
       if: always()
       run: |
         mkdir -p public
-        if [ -f reports/cucumber.html ]; then
-          cp reports/cucumber.html public/index.html
-          cp -f reports/cucumber.json public/ 2>/dev/null || true
+        if [ -f reports/api-cucumber.html ] || [ -f reports/webui-cucumber.html ]; then
+          # Copy all report files (HTML, JSON, etc.) from reports directory to public
+          cp -r reports/* public/
+          
+          # Create index.html as a landing page if it doesn't exist
+          if [ ! -f public/index.html ]; then
+            if [ -f public/webui-cucumber.html ]; then
+              cp public/webui-cucumber.html public/index.html
+            else
+              cp public/api-cucumber.html public/index.html
+            fi
+          fi
         else
           echo "<html><body><h1>No cucumber report was generated</h1></body></html>" > public/index.html
-          fi
+        fi
           
     - name: Archive test results
       uses: actions/upload-artifact@v4
